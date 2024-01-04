@@ -289,17 +289,30 @@ void WebView::InitWebView() {
   char* chromium_argv[] = {
       const_cast<char*>("--disable-pinch"),
       const_cast<char*>("--js-flags=--expose-gc"),
-      const_cast<char*>("--single-process"),
-      const_cast<char*>("--no-zygote"),
+      const_cast<char*>("--disable-web-security"),
+      // NOTE(jsuya): These flags are not guaranteed to work in certain versions
+      // of Tizen(6.0). These can be checked later with tizen version
+      // information.
+      // const_cast<char*>("--single-process"),
+      // const_cast<char*>("--no-zygote"),
   };
   int chromium_argc = sizeof(chromium_argv) / sizeof(chromium_argv[0]);
   EwkInternalApiBinding::GetInstance().main.SetArguments(chromium_argc,
                                                          chromium_argv);
 
   ewk_init();
-  Ecore_Evas* evas = ecore_evas_new("wayland_egl", 0, 0, 1, 1, 0);
+  Ecore_Evas* evas = ecore_evas_new(nullptr, 0, 0, 1, 1, 0);
+  if (!evas) {
+    printf("Failed to create ecore evas instance.");
+    return;
+  }
 
   webview_instance_ = ewk_view_add(ecore_evas_get(evas));
+  if (!webview_instance_) {
+    printf("Failed to create ewk view instance.");
+    return;
+  }
+
   ecore_evas_focus_set(evas, true);
   ewk_view_focus_set(webview_instance_, true);
   EwkInternalApiBinding::GetInstance().view.OffscreenRenderingEnabledSet(
