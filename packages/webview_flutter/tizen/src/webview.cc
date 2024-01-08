@@ -303,14 +303,16 @@ void WebView::InitWebView() {
   ewk_init();
   Ecore_Evas* evas = ecore_evas_new(nullptr, 0, 0, 1, 1, 0);
   if (!evas) {
-    printf("Failed to create ecore evas instance.");
-    return;
+    debug_log_ += "\n Fail to create ecore evas.";
+    //printf("Failed to create ecore evas instance.");
+    //return;
   }
 
   webview_instance_ = ewk_view_add(ecore_evas_get(evas));
   if (!webview_instance_) {
-    printf("Failed to create ewk view instance.");
-    return;
+    debug_log_ += "\n Fail to create ewk_view.";
+    //printf("Failed to create ewk view instance.");
+    //return;
   }
 
   ecore_evas_focus_set(evas, true);
@@ -365,7 +367,7 @@ void WebView::HandleWebViewMethodCall(const FlMethodCall& method_call,
                                       std::unique_ptr<FlMethodResult> result) {
   if (!webview_instance_) {
     result->Error("Invalid operation",
-                  "The webview instance has not been initialized.");
+                  "The webview instance has not been initialized."+ debug_log_);
     return;
   }
 
