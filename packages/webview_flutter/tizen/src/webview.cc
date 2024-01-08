@@ -14,6 +14,7 @@
 #include "ewk_internal_api_binding.h"
 #include "log.h"
 #include "webview_factory.h"
+#include <Evas.h>
 
 namespace {
 
@@ -300,6 +301,9 @@ void WebView::InitWebView() {
   EwkInternalApiBinding::GetInstance().main.SetArguments(chromium_argc,
                                                          chromium_argv);
 
+  evas_init();
+  //emile_init();
+  ecore_evas_init();
   ewk_init();
   Ecore_Evas* evas = ecore_evas_new(nullptr, 0, 0, 1, 1, 0);
   if (!evas) {
@@ -307,8 +311,10 @@ void WebView::InitWebView() {
     //printf("Failed to create ecore evas instance.");
     //return;
   }
-
-  webview_instance_ = ewk_view_add(ecore_evas_get(evas));
+  Evas *x;
+  x = ecore_evas_get(evas);
+  ecore_evas_show(evas);
+  webview_instance_ = ewk_view_add(x);
   if (!webview_instance_) {
     debug_log_ += "\n Fail to create ewk_view.";
     //printf("Failed to create ewk view instance.");
