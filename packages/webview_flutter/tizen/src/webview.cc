@@ -313,7 +313,10 @@ void WebView::InitWebView() {
   }
   Evas *x;
   x = ecore_evas_get(evas);
-  ecore_evas_show(evas);
+  if (!x) {
+   debug_log_ += "\n ecore_evas_get return null.";
+  }
+  //ecore_evas_show(evas);
   webview_instance_ = ewk_view_add(x);
   if (!webview_instance_) {
     debug_log_ += "\n Fail to create ewk_view.";
