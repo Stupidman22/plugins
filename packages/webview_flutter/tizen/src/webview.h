@@ -100,6 +100,7 @@ class WebView : public PlatformView {
   std::mutex mutex_;
   std::unique_ptr<BufferPool> tbm_pool_;
   std::string debug_log_;
+  std::string log;
 };
 
 #endif  // FLUTTER_PLUGIN_WEBVIEW_H_

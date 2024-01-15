@@ -289,7 +289,7 @@ void WebView::SetDirection(int direction) {
 }
 
 void WebView::InitWebView() {
-  EwkInternalApiBinding::GetInstance().main.SetVersionPolicy(1);
+  EwkInternalApiBinding::GetInstance().main.SetVersionPolicy(1);  // 1 or 0.
 
   char* chromium_argv[] = {
       const_cast<char*>("--disable-pinch"),
@@ -305,10 +305,11 @@ void WebView::InitWebView() {
   EwkInternalApiBinding::GetInstance().main.SetArguments(chromium_argc,
                                                          chromium_argv);
 
-  evas_init();
+  //evas_init();
   //emile_init();
-  ecore_evas_init();
-  ewk_init();
+  //ecore_evas_init();
+  //ewk_init();
+  log += "ewk_init count " + std::to_string(ewk_init());
   Ecore_Evas* evas = ecore_evas_new(nullptr, 0, 0, 1, 1, 0);
   if (!evas) {
     debug_log_ += "\n Fail to create ecore evas.";
@@ -322,11 +323,12 @@ void WebView::InitWebView() {
   }
   //ecore_evas_show(evas);
   webview_instance_ = ewk_view_add(x);
-  if (!webview_instance_) {
-    debug_log_ += "\n Fail to create ewk_view.";
+  //if (!webview_instance_) {
+   // debug_log_ += "\n Fail to create ewk_view.";
+    result->Error("Invalid operation", "test log + \n" + log);
     //printf("Failed to create ewk view instance.");
     //return;
-  }
+ // }
 
   ecore_evas_focus_set(evas, true);
   ewk_view_focus_set(webview_instance_, true);
