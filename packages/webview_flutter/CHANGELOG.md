@@ -3,6 +3,10 @@
 * Change ecore_evas engine for web engine.
 * Remove some chromium arguments temporary.
 
+## NEXT
+
+* Add ewk_set_version_policy() call.
+
 ## 0.9.0
 
 * Update webivew_flutter to 4.4.2.
