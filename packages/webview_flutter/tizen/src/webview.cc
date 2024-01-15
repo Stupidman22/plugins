@@ -289,7 +289,7 @@ void WebView::SetDirection(int direction) {
 }
 
 void WebView::InitWebView() {
-  EwkInternalApiBinding::GetInstance().main.SetVersionPolicy(1);  // 1 or 0.
+  EwkInternalApiBinding::GetInstance().main.SetVersionPolicy(0);  // 1 or 0.
 
   char* chromium_argv[] = {
       const_cast<char*>("--disable-pinch"),
