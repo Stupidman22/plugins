@@ -325,7 +325,8 @@ void WebView::InitWebView() {
   webview_instance_ = ewk_view_add(x);
   //if (!webview_instance_) {
    // debug_log_ += "\n Fail to create ewk_view.";
-    result->Error("Invalid operation", "test log + \n" + log);
+       debug_log_ += "test log + \n" + log;
+   //result->Error("Invalid operation", "test log + \n" + log);
     //printf("Failed to create ewk view instance.");
     //return;
  // }
