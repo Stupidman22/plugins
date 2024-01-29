@@ -7,6 +7,8 @@
 
 #include <Evas.h>
 
+#include <string>
+
 typedef enum {
   EWK_TOUCH_START,
   EWK_TOUCH_MOVE,
@@ -41,6 +43,8 @@ typedef Eina_Bool (*EwkViewSupportVideoHoleSetFnPtr)(Evas_Object* obj,
                                                      Eina_Bool enabled,
                                                      Eina_Bool boo);
 
+typedef Evas_Object* (*EwkViewAddWithContextFnPtr)(Evas* e, void* context);
+
 typedef struct {
   EwkViewBgColorSetFnPtr SetBackgroundColor = nullptr;
   EwkViewFeedTouchEventFnPtr FeedTouchEvent = nullptr;
@@ -50,10 +54,11 @@ typedef struct {
   EwkViewImeWindowSetFnPtr ImeWindowSet = nullptr;
   EwkViewKeyEventsEnabledSetFnPtr KeyEventsEnabledSet = nullptr;
   EwkViewSupportVideoHoleSetFnPtr SupportVideoHoleSet = nullptr;
+  EwkViewAddWithContextFnPtr AddWithContext = nullptr;
 } EwkViewProcTable;
 
 typedef void (*EwkSetArgumentsFnPtr)(int argc, char** argv);
-typedef void (*EwkSetVersionPolicyFnPtr)(int preference);
+typedef int (*EwkSetVersionPolicyFnPtr)(int preference);
 
 typedef struct {
   EwkSetArgumentsFnPtr SetArguments = nullptr;
@@ -63,9 +68,13 @@ typedef struct {
 typedef struct Ewk_Settings Ewk_Settings;
 typedef void (*EwkSettingsImePanelEnabledSetFnPtr)(Ewk_Settings* settings,
                                                    Eina_Bool enabled);
+typedef void* (*EwkContextDefaultGetFnPtr)();
+typedef void* (*EwkContextNewFnPtr)();
 
 typedef struct {
   EwkSettingsImePanelEnabledSetFnPtr ImePanelEnabledSet = nullptr;
+  EwkContextDefaultGetFnPtr ContextDefaultGet = nullptr;
+  EwkContextNewFnPtr ContextNew = nullptr;
 } EwkSettingsProcTable;
 
 typedef struct _Ewk_Console_Message Ewk_Console_Message;
@@ -109,15 +118,21 @@ class EwkInternalApiBinding {
 
   bool Initialize();
 
+  void EwkImpleDlopen();
+  void* EwkImplDlsym(const char* function_name);
+
   EwkViewProcTable view;
   EwkMainProcTable main;
   EwkSettingsProcTable settings;
   EwkConsoleMessageProcTable console_message;
 
+  std::string log = "";
+
  private:
   EwkInternalApiBinding();
 
   void* handle_ = nullptr;
+  void* handle_impl_ = nullptr;
 };
 
 #endif  // FLUTTER_PLUGIN_EWK_INTERNAL_API_BINDING_H_

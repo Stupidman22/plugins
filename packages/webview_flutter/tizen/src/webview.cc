@@ -14,7 +14,6 @@
 #include "ewk_internal_api_binding.h"
 #include "log.h"
 #include "webview_factory.h"
-#include <Evas.h>
 
 namespace {
 
@@ -289,48 +288,22 @@ void WebView::SetDirection(int direction) {
 }
 
 void WebView::InitWebView() {
-  EwkInternalApiBinding::GetInstance().main.SetVersionPolicy(0);  // 1 or 0.
+  EwkInternalApiBinding::GetInstance().main.SetVersionPolicy(1);
 
   char* chromium_argv[] = {
       const_cast<char*>("--disable-pinch"),
       const_cast<char*>("--js-flags=--expose-gc"),
-      const_cast<char*>("--disable-web-security"),
-      // NOTE(jsuya): These flags are not guaranteed to work in certain versions
-      // of Tizen(6.0). These can be checked later with tizen version
-      // information.
-      // const_cast<char*>("--single-process"),
-      // const_cast<char*>("--no-zygote"),
+      const_cast<char*>("--single-process"),
+      const_cast<char*>("--no-zygote"),
   };
   int chromium_argc = sizeof(chromium_argv) / sizeof(chromium_argv[0]);
   EwkInternalApiBinding::GetInstance().main.SetArguments(chromium_argc,
                                                          chromium_argv);
 
-  //evas_init();
-  //emile_init();
-  //ecore_evas_init();
-  //ewk_init();
-  log += "ewk_init count " + std::to_string(ewk_init());
-  Ecore_Evas* evas = ecore_evas_new(nullptr, 0, 0, 1, 1, 0);
-  if (!evas) {
-    debug_log_ += "\n Fail to create ecore evas.";
-    //printf("Failed to create ecore evas instance.");
-    //return;
-  }
-  Evas *x;
-  x = ecore_evas_get(evas);
-  if (!x) {
-   debug_log_ += "\n ecore_evas_get return null.";
-  }
-  //ecore_evas_show(evas);
-  webview_instance_ = ewk_view_add(x);
-  //if (!webview_instance_) {
-   // debug_log_ += "\n Fail to create ewk_view.";
-       debug_log_ += "test log + \n" + log;
-   //result->Error("Invalid operation", "test log + \n" + log);
-    //printf("Failed to create ewk view instance.");
-    //return;
- // }
+  ewk_init();
+  Ecore_Evas* evas = ecore_evas_new("wayland_egl", 0, 0, 1, 1, 0);
 
+  webview_instance_ = ewk_view_add(ecore_evas_get(evas));
   ecore_evas_focus_set(evas, true);
   ewk_view_focus_set(webview_instance_, true);
   EwkInternalApiBinding::GetInstance().view.OffscreenRenderingEnabledSet(
@@ -383,7 +356,7 @@ void WebView::HandleWebViewMethodCall(const FlMethodCall& method_call,
                                       std::unique_ptr<FlMethodResult> result) {
   if (!webview_instance_) {
     result->Error("Invalid operation",
-                  "The webview instance has not been initialized."+ debug_log_);
+                  "The webview instance has not been initialized.");
     return;
   }
 
