@@ -18,3 +18,8 @@ USER_CPP_UNDEFS =
 USER_INC_DIRS = inc src
 USER_INC_FILES =
 USER_CPP_INC_FILES =
+
+# Linker options
+USER_LIB_DIRS = lib/${BUILD_ARCH}
+USER_LIBS = pthread lightweight-web-engine.flutter tuv
+USER_LFLAGS = -Wl,-rpath='$$ORIGIN'
